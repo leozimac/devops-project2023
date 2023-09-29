@@ -1,0 +1,6 @@
+Make hosts SSH accessible
+
+Configuring a ssh key to login directly on the servers without needing to enter a password every time.
+
+ssh-keygen
+ssh-copy-id node1 && ssh-copy-id node2 && ssh-copy-id node3
