@@ -1,0 +1,47 @@
+Vagrant.configure("2") do |config|
+    # Here it's the servers configuration, specifing:
+    # hostname, box (the image), ip address and ssh port
+    servers=[
+        {
+            :hostname => "control",
+            :box => "bento/ubuntu-20.04",
+            :ip => "192.168.56.10",
+            :ssh_port => "2200"
+        },
+        {
+            :hostname => "node1",
+            :box => "bento/ubuntu-20.04",
+            :ip => "192.168.56.11",
+            :ssh_port => "2201"
+        },
+        {
+            :hostname => "node2",
+            :box => "bento/ubuntu-20.04",
+            :ip => "192.168.56.12",
+            :ssh_port => "2202"
+        },
+        {
+            :hostname => "node3",
+            :box => "bento/ubuntu-20.04",
+            :ip => "192.168.56.13",
+            :ssh_port => "2203"
+        }
+    ]
+
+    # For each server it will be configured:
+    servers.each do |machine|
+        # defining the machine properties
+        config.vm.define machine[:hostname] do |node|
+            node.vm.box = machine[:box]
+            node.vm.hostname = machine[:hostname]
+            node.vm.network :private_network, ip: machine[:ip]
+            node.vm.network "forwarded_port", guest: 22, host: machine[:ssh_port], id: "ssh"
+            node.vm.provider :virtualbox do |vb|
+                # Customizing the memory size of each machine
+                vb.customize ["modifyvm", :id, "--memory", 512]
+                # Customizing the number of cpus of each machine
+                vb.customize ["modifyvm", :id, "--cpus", 1]
+            end
+        end
+    end
+end
